@@ -1,0 +1,50 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use SQL::Translator;
+use Module::Runtime qw/require_module/;
+
+package SchemaDiag::Args {
+  use Moose;
+  with 'MooseX::Getopt';
+  has schema => (is => 'ro', isa => 'Str', required => 1, documentation => 'The name of the schema class to load. Must be a DBIx::Class');
+  has file => (is => 'ro', isa => 'Str', lazy => 1, default => sub {
+      my $self = shift;
+      return sprintf("%s_schema.png", $self->schema);
+    },
+    documentation => 'The file to output the schema diagram to'
+  );
+  has width => (is => 'ro', isa => 'Int', default => 1000, documentation => 'The width of the image');
+  has height => (is => 'ro', isa => 'Int', default => 600, required => 1, documentation => 'The height of the image');
+}
+
+my $opts = SchemaDiag::Args->new_with_options;
+
+my $schema_name = $opts->schema;
+
+require_module $schema_name;
+
+my $schema = $schema_name->connect_from_config;
+
+SQL::Translator->new(
+    parser => 'SQL::Translator::Parser::DBIx::Class',
+    parser_args => { dbic_schema => $schema },
+    to => 'GraphViz',
+    producer_args => {
+      out_file => $opts->file,
+      layout => 'sfdp',
+      overlap => 'false',
+      node => { shape => 'record' },
+      show_datatypes => 1,
+      friendly_ints => 1,
+      friendly_ints_extended => 1,
+      show_sizes => 1,
+      show_constraints => 1,
+      show_indexes => 1,
+      width => $opts->width,
+      height => $opts->height,
+    },
+)->translate;
+
