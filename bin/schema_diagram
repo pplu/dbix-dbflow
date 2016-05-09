@@ -4,12 +4,25 @@ use strict;
 use warnings;
 
 use SQL::Translator;
-use Module::Runtime qw/use_module/;
 
 package SchemaDiag::Args {
   use Moose;
   with 'MooseX::Getopt';
+
+  use Module::Runtime qw/use_module/;
+
   has schema => (is => 'ro', isa => 'Str', required => 1, documentation => 'The name of the schema class to load. Must be a DBIx::Class');
+  has _schema => (
+    is => 'ro',
+    lazy => 1,
+    default => sub {
+      my $self = shift;
+      my $schema_name = $self->schema;
+      use_module $schema_name;
+      my $schema = $schema_name->admin_connection;
+      return $schema;
+    }
+  );
   has file => (is => 'ro', isa => 'Str', lazy => 1, default => sub {
       my $self = shift;
       return sprintf("%s_schema.png", $self->schema);
@@ -22,15 +35,9 @@ package SchemaDiag::Args {
 
 my $opts = SchemaDiag::Args->new_with_options;
 
-my $schema_name = $opts->schema;
-
-my $loaded = use_module $schema_name;
-
-my $schema = $schema_name->admin_connection;
-
 SQL::Translator->new(
     parser => 'SQL::Translator::Parser::DBIx::Class',
-    parser_args => { dbic_schema => $schema },
+    parser_args => { dbic_schema => $opts->_schema },
     to => 'GraphViz',
     producer_args => {
       out_file => $opts->file,
