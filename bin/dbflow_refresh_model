@@ -1,0 +1,86 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use DBIx::Class::Schema::Loader;
+use Module::Runtime qw/use_module/;
+
+package RefreshModel::Args {
+  use Moose;
+  with 'MooseX::Getopt';
+
+  use Module::Runtime qw/use_module/;
+
+  has schema => (
+    is => 'ro',
+    isa => 'Str',
+    documentation => 'The name of the schema class to generate/refresh'
+  );
+  has _schema => (
+    is => 'ro',
+    lazy => 1,
+    default => sub {
+      my $self = shift;
+      my $schema_name = $self->schema;
+      use_module $schema_name;
+      my $schema = $schema_name->admin_connection;
+      return $schema;
+    }
+  );
+  has dir => (
+    is => 'ro', isa => 'Str', default => 'lib/'
+  );
+  has dbh => (
+    is => 'ro',
+    isa => 'Str',
+  );
+  has user => (
+    is => 'ro',
+    isa => 'Str',
+  );
+  has pass => (
+    is => 'ro',
+    isa => 'Str',
+  );
+}
+
+my $opts = RefreshModel::Args->new_with_options;
+
+my $connect_info;
+
+eval {
+  my $s = $opts->_schema;
+  $connect_info = $s->storage->connect_info;
+};
+if ($@){
+  # The schema didn't load... give an opportunity to pass it via args
+  # This is needed for the first invocation (the schema doesn't exist
+  # yet
+  die "Can't retrieve connect info from schema nor --dbh argument" if (not defined $opts->dbh);
+  $connect_info = [ $opts->dbh, $opts->user, $opts->pass ];
+}
+
+my $schema_dir = $opts->dir;
+
+DBIx::Class::Schema::Loader->import(
+  "dump_to_dir:$schema_dir", 'make_schema_at'
+);
+
+make_schema_at(
+  $opts->schema,
+  {},#$self->loader_args,
+  $connect_info,
+);
+
+require lib;
+lib->import($schema_dir);
+
+my @sources = $opts->_schema->sources;
+
+if (not @sources) {
+  print 'WARNING: No tables found, did you forget to specify db_schema?';
+  exit 1;
+}
+
+exit 0;
