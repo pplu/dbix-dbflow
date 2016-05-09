@@ -76,10 +76,10 @@ make_schema_at(
 require lib;
 lib->import($schema_dir);
 
-my @sources = $opts->_schema->sources;
+my @sources = $opts->schema->sources;
 
 if (not @sources) {
-  print 'WARNING: No tables found, did you forget to specify db_schema?';
+  print "ERROR: No tables found. Check that the schema is OK\n";
   exit 1;
 }
 
