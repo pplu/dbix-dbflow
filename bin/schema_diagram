@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use SQL::Translator;
-use Module::Runtime qw/require_module/;
+use Module::Runtime qw/use_module/;
 
 package SchemaDiag::Args {
   use Moose;
@@ -24,9 +24,9 @@ my $opts = SchemaDiag::Args->new_with_options;
 
 my $schema_name = $opts->schema;
 
-require_module $schema_name;
+my $loaded = use_module $schema_name;
 
-my $schema = $schema_name->connect_from_config;
+my $schema = $schema_name->admin_connection;
 
 SQL::Translator->new(
     parser => 'SQL::Translator::Parser::DBIx::Class',
