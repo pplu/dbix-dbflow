@@ -62,3 +62,9 @@ $dh->prepare_install;
 
 $dh->install_version_storage;
 
+my $version_insert = $opts->_schema->storage->dbh->prepare(
+  "INSERT INTO dbix_class_deploymenthandler_versions (version) VALUES (?)"
+);
+$version_insert->execute(1);
+
+
