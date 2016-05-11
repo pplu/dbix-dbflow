@@ -15,7 +15,8 @@ package RefreshModel::Args {
   has schema => (
     is => 'ro',
     isa => 'Str',
-    documentation => 'The name of the schema class to generate/refresh'
+    documentation => 'The name of the schema class to generate/refresh',
+    required => 1,
   );
   has _schema => (
     is => 'ro',
@@ -47,18 +48,18 @@ package RefreshModel::Args {
 
 my $opts = RefreshModel::Args->new_with_options;
 
+die "Must provide --schema or --dbh to generate a schema" if (not defined $opts->schema and not defined $opts->dbh);
+
 my $connect_info;
 
-eval {
+if (defined $opts->dbh){
+  $connect_info = [ $opts->dbh, $opts->user, $opts->pass ];
+} else {
   my $s = $opts->_schema;
   $connect_info = $s->storage->connect_info;
-};
-if ($@){
-  # The schema didn't load... give an opportunity to pass it via args
-  # This is needed for the first invocation (the schema doesn't exist
-  # yet
-  die "Can't retrieve connect info from schema nor --dbh argument" if (not defined $opts->dbh);
-  $connect_info = [ $opts->dbh, $opts->user, $opts->pass ];
+  if ($@){
+    die "Can't retrieve connect info from schema" if (not defined $opts->dbh);
+  }
 }
 
 my $schema_dir = $opts->dir;
