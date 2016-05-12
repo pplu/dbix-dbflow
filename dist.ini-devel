@@ -9,6 +9,8 @@ main_module = lib/CAPSiDE/DBFlow.pm
 
 [Git::GatherDir]
 exclude_match=Makefile
+exclude_filename=bin/dbflow_upgrade_schema
+exclude_filename=lib/CAPSiDE/DBFlow/Runtime.pm
 
 [ExecDir]
 dir = bin
