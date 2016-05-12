@@ -15,6 +15,8 @@ exclude_filename=bin/dbflow_make_upgrade_scripts
 exclude_filename=bin/dbflow_refresh_model
 exclude_filename=bin/dbflow_schema_diagram
 exclude_filename=lib/CAPSiDE/DBFlow.pm
+exclude_match=dist.ini*
+exclude_filename=cpanfile
 
 [Prereqs]
 MooseX::Getopt = 0
