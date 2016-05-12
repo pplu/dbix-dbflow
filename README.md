@@ -1,74 +1,116 @@
-# The CAPSiDE DB Flow:
+# NAME
 
-## New project:
+CAPSiDE::DBFlow - CAPSiDE database development cycle
+
+# SYNOPSIS
+
+in your cpanfile add the following
+
+    requires 'CAPSiDE::DBFlow::Runtime';
+
+    on develop => sub {
+      requires 'CAPSiDE::DBFlow';
+    }
+
+# USAGE
+
+## Using the DBFlow on a new project:
 
 Create the database in MySQL (tables, fks, etc)
 
-0. `dbflow_refresh_model ` 
+    dbflow_refresh_model --schema MySchema --dbh "DBD:mysql..."
 
-`
-dbflow_refresh_model
-`
+This will create lib/MySchema.pm. Add this code to it:
 
-Modify the model to include:
+    our $VERSION = 1;
+    
+    sub admin_connection {
+      my $schema = __PACKAGE__->connect(
+        "DBI:mysql:mysql_read_default_file=pathtoadmincreds.cnf;mysql_read_default_group=schema_group",
+        undef,
+        undef,
+        {
+          AutoCommit => 1,
+          RaiseError => 1,
+          mysql_enable_utf8 => 1,
+          quote_char => '`',
+          name_sep   => '.',
+        },
+      );
+    }
 
-`
-our $VERSION = 1;
+Now install the DBFlow with
 
-sub admin_connection {
-  my $schema = __PACKAGE__->connect(
-    "DBI:mysql:mysql_read_default_file=pathtoadmincreds.cnf;mysql_read_default_group=schema_group",
-    undef,
-    undef,
-    {
-      AutoCommit => 1,
-      RaiseError => 1,
-      mysql_enable_utf8 => 1,
-      quote_char => '``',
-      name_sep   => '.',
-    },
-  );
-}
-`
+    dbflow_create --schema MySchema
 
-`dbflow_create --schema MySchema`
+Creates a "database" directory with the deploy info for the database. Creates a handler table in your schema
 
-installs dhhandler tables, creates database dir, etc
+## Using the DBFlow
 
-## Once installed (ongoing project)
+Before modifying the database, bump up it's version (you're about to produce what will be the next version 
+of the database, so we have to signal that)
 
-Before modifying the database, bump up it's version
+Modify the database with your favorite tool (HeidiSQL, mysql CLI, etc). Add columns, indexes, etc.
 
-Modify the database (columns, tables, indexes, etc)
+    dbflow_refresh_model --schema MySchema
 
-1. `dbflow_refresh_model --schema X`
+This will regenerate lib/MySchema
 
-Execute `dbflow_refresh_model` all the times you like until
-you have the model you like
+You can still tweak the database more times (add more columns, change types, etc). You have to execute 
+`dbflow_refresh_model` each time, in order to refresh the DBIx::Class model
 
-2. `dbflow_make_upgrade_scripts --schema`
+When you're happy with your changes, and want to produce an upgrade:
 
-Create upgrade scripts for your schema:
+    dbflow_make_upgrade_scripts --schema MySchema
 
-the SQL for the last version to your version is created
-automatically by comparing the schemas. You can do automated
-work in:
+This creates a `database/MySQL/upgrade/X-Y/___.sql` file that contains the SQL instructions to migrate
+from version X to version Y.
 
-in `database/_common/upgrade/3-4/01-upgrade_step.pl`
+You can create your own (new) SQL files in the same directory that will be executed on upgrade, for operations 
+that cannot be automatically derived (suppose you have to UPDATE some values on a table), although it's better
+to create Perl files that do the updating with the model (so you don't have to implement complex logic in SQL).
 
-`
-sub {
-  my $model = shift;
+Create a `database/_common/upgrade/X-Y/01-upgrade_step.pl` file (where Y corresponds the version you are producing,
+and X to the previous one). Put this code in it:
 
-  my $things = $model->resultset('Things')->search({ ... });
-}
-`
+    sub {
+      my $model = shift;
+    
+      my $things = $model->resultset('Things')->search({ ... });
+    }
 
-3. `db_upgrade --schema`
+Do whatever perlish things you want in the update script, and please use the model to do it.
 
-Test your schema update: `make obliviatedb`, and `db_upgrade --schema`
+you can test the updating all the times you want with `make obliviatedb` and `dbflow_upgrade_schema --schema MySchema`
+until you are sure that the update will work in production.
 
-# Interesting utils:
+## Updating the production database
 
-Generate an image with the database schema
+    dbflow_upgrade_schema --schema MySchema
 
+In production all you have to do is execute `dbflow_upgrade_schema`.
+
+# Interesting utilities
+
+## Visualizing your schema
+
+You can visualize your schema with
+
+    dbflow_schema_diagram --schema MySchema
+
+It will generate a PNG image called MySchema\_schema.png
+
+You can control the dimensions of the image with `--height` and `--width` parameters.
+
+You can also specify the name of the file to write to with `--file`.
+
+# FAQ
+
+## MySchema.pm cannot be found
+
+Try executing with a PERL5LIB that points to the `lib` dir
+
+## I have more than one schema to manage in my project
+
+All utils let you specify the schema name you're acting upon with `--schema` and the directory
+to create the upgrade/deploy scripts `--dir`
