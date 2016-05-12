@@ -1,0 +1,51 @@
+name = CAPSiDE-DBFlow-Runtime
+author = Jose Luis Martinez <jlmartinez@capside.com>
+copyright_holder = CAPSiDE
+copyright_year = 2016
+license = None
+main_module = lib/CAPSiDE/DBFlow/Runtime.pm
+
+[VersionFromModule]
+
+[Git::GatherDir]
+exclude_match=Makefile
+exclude_filename=bin/dbflow_create
+exclude_filename=bin/dbflow_deploy_schema
+exclude_filename=bin/dbflow_make_upgrade_scripts
+exclude_filename=bin/dbflow_refresh_model
+exclude_filename=bin/dbflow_schema_diagram
+exclude_filename=lib/CAPSiDE/DBFlow.pm
+
+[Prereqs]
+MooseX::Getopt = 0
+DBIx::Class::DeploymentHandler = 0
+
+[ExecDir]
+dir = bin
+
+[MakeMaker]
+
+[@Git]
+allow_dirty = dist.ini
+allow_dirty = Changes
+allow_dirty = README
+
+[Prereqs::FromCPANfile]
+
+[MetaYAML]
+[MetaJSON]
+
+[MetaResources]
+repository.web = https://scm.capside.com/
+repository.url = https://scm.capside.com/
+repository.type = git
+bugtracker.web = https://scm.capside.com/
+
+;[RunExtraTests]
+;[TestRelease]
+;[PodSyntaxTests]
+
+;[FileFinder::ByName / Examples]
+;dir = examples
+
+[Manifest]
