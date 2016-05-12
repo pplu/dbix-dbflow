@@ -6,9 +6,6 @@ use feature qw/say/;
 
 use DBIx::Class::DeploymentHandler;
 use Getopt::Long;
-use FindBin;
-use lib "$FindBin::Bin/../../lib", "$FindBin::Bin/../../../lib";
-
 
 package CreateDBFlow::Args {
   use Moose;
