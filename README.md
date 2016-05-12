@@ -2,6 +2,8 @@
 
 CAPSiDE::DBFlow - CAPSiDE database development cycle
 
+*Note that this documentation can be out of date*. Try `perldoc CAPSiDE::DBFlow`
+
 # SYNOPSIS
 
 in your cpanfile add the following
