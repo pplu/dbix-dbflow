@@ -1,6 +1,5 @@
 #!/usr/bin/env perl
-# ABSTRACT: Script to install DH for the first time (creates 'database' directory, etc)
-# Very likely, this is NOT the script you are looking for.
+
 use strict;
 use warnings;
 use feature qw/say/;
