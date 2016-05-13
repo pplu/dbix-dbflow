@@ -117,7 +117,9 @@ You can also specify the name of the file to write to with C<--file>.
 
 =head2 MySchema.pm cannot be found
 
-Try executing with a PERL5LIB that points to the C<lib> dir
+The 'lib' directory in the current directory is automatically included (your schema should be there).
+You can use the C<-I> option to specify an alternate, or try executing with a PERL5LIB that points to the 
+appropiate directory with your schema.
 
 =head2 I have more than one schema to manage in my project
 
