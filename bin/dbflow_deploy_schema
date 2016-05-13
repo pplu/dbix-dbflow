@@ -40,6 +40,7 @@ package DeployDBFlow::Args {
     default => sub {
       my $self = shift;
       my $schema_name = $self->schema;
+      $self->use_lib_include_dir;
       require_module $schema_name;
       my $schema;
       if (not defined $self->dbh) {
@@ -57,6 +58,21 @@ package DeployDBFlow::Args {
     default => 'database',
     documentation => 'The directory to create support files in',
   );
+
+  has include_dir => (
+    traits => ['Getopt'],
+    is => 'ro',
+    isa => 'Str',
+    default => 'lib',
+    cmd_aliases => 'I',
+    documentation => 'library directory for the schema (will be added to @INC). Defaults to lib',
+  );
+
+  sub use_lib_include_dir {
+    my $self = shift;
+    require lib;
+    lib->import($self->include_dir);
+  }
 }
 
 #We have a problem: when you specify a dbh that connects to a non-existant DB

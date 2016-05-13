@@ -19,11 +19,27 @@ package UpgradeDBFlow::Args {
     default => sub {
       my $self = shift;
       my $schema_name = $self->schema;
+      $self->use_lib_include_dir;
       require_module $schema_name;
       my $schema = $schema_name->admin_connection;
       return $schema;
     }
   );
+
+  has include_dir => (
+    traits => ['Getopt'],
+    is => 'ro',
+    isa => 'Str',
+    default => 'lib',
+    cmd_aliases => 'I',
+    documentation => 'library directory for the schema (will be added to @INC). Defaults to lib',
+  );
+
+  sub use_lib_include_dir {
+    my $self = shift;
+    require lib;
+    lib->import($self->include_dir);
+  }
 
   has dir => (
     is => 'ro',
