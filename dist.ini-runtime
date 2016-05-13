@@ -32,8 +32,6 @@ allow_dirty = dist.ini
 allow_dirty = Changes
 allow_dirty = README
 
-[Prereqs::FromCPANfile]
-
 [MetaYAML]
 [MetaJSON]
 

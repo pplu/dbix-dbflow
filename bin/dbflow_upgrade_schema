@@ -49,7 +49,7 @@ package UpgradeDBFlow::Args {
   );
 }
 
-my $opts = UpgradeDBFlow->new_with_options;
+my $opts = UpgradeDBFlow::Args->new_with_options;
 
 my $dh = DBIx::Class::DeploymentHandler->new({
    schema              => $opts->_schema,
