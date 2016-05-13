@@ -1,5 +1,5 @@
 package CAPSiDE::DBFlow;
-  our $VERSION = '0.01';
+  our $VERSION = '0.02';
 
   # This package is just a placeholder for the version
 
