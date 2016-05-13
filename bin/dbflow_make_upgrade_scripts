@@ -76,10 +76,11 @@ if ($version >= $schema_version) {
    die "Can't generate upgrade scripts for an already existing DB version. Version in the DB: $version. The Schema Version: $schema_version";
 }
 
+$dh->add_database_version({ version => $opts->_schema->schema_version });
+$dh->prepare_deploy;
 $dh->prepare_upgrade({
   from_version => $schema_version - 1,
   to_version => $schema_version,
   version_set => [$schema_version - 1, $schema_version],
 });
-$dh->add_database_version({ version => $opts->_schema->schema_version });
 
