@@ -61,6 +61,12 @@ package RefreshModel::Args {
     is => 'ro',
     isa => 'Str',
   );
+
+  has use_inflatecolumn_datetime => (
+    is => 'ro',
+    isa => 'Bool',
+    default => 1
+  );
 }
 
 my $opts = RefreshModel::Args->new_with_options;
@@ -85,9 +91,16 @@ DBIx::Class::Schema::Loader->import(
   "dump_to_dir:$schema_dir", 'make_schema_at'
 );
 
+my $components = [
+  ($opts->use_inflatecolumn_datetime) ? 'InflateColumn::DateTime' : (),
+];
+
 make_schema_at(
   $opts->schema,
-  {},#$self->loader_args,
+  {
+    components => $components,
+    relationships => 1,
+  },
   $connect_info,
 );
 
