@@ -1,3 +1,5 @@
+# this cpanfile has the requisites for the developer-mode package
+# the runtime package has requisites declared in dist.ini-runtime
 requires 'MooseX::Getopt';
 requires 'DBIx::Class::DeploymentHandler';
 requires 'GraphViz';
