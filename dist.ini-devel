@@ -1,16 +1,16 @@
-name = CAPSiDE-DBFlow
-author = Jose Luis Martinez <jlmartinez@capside.com>
-copyright_holder = CAPSiDE
+name = DBIx-DBFlow
+author = Jose Luis Martinez <pplusdomain@gmail.com>
+copyright_holder = Jose Luis Martinez
 copyright_year = 2016
 license = None
-main_module = lib/CAPSiDE/DBFlow.pm
+main_module = lib/DBIx/DBFlow.pm
 
 [VersionFromModule]
 
 [Git::GatherDir]
 exclude_match=Makefile
 exclude_filename=bin/dbflow_upgrade_schema
-exclude_filename=lib/CAPSiDE/DBFlow/Runtime.pm
+exclude_filename=lib/DBIx/DBFlow/Runtime.pm
 exclude_match=dist.ini*
 exclude_filename=cpanfile
 

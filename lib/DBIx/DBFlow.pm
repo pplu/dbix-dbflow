@@ -1,4 +1,4 @@
-package CAPSiDE::DBFlow;
+package DBIx::DBFlow;
   our $VERSION = '0.03';
 
   # This package is just a placeholder for the version
@@ -9,16 +9,16 @@ package CAPSiDE::DBFlow;
 
 =head1 NAME
 
-CAPSiDE::DBFlow - CAPSiDE database development cycle
+DBIx::DBFlow - Database development helpers
 
 =head1 SYNOPSIS
 
 in your cpanfile add the following
 
-  requires 'CAPSiDE::DBFlow::Runtime';
+  requires 'DBIx::DBFlow::Runtime';
 
   on develop => sub {
-    requires 'CAPSiDE::DBFlow';
+    requires 'DBIx::DBFlow';
   }
 
 =head1 USAGE

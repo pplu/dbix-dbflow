@@ -1,17 +1,15 @@
 # NAME
 
-CAPSiDE::DBFlow - CAPSiDE database development cycle
-
-*Note that this documentation can be out of date*. Try `perldoc CAPSiDE::DBFlow`
+DBIx::DBFlow - Database development helpers
 
 # SYNOPSIS
 
 in your cpanfile add the following
 
-    requires 'CAPSiDE::DBFlow::Runtime';
+    requires 'DBIx::DBFlow::Runtime';
 
     on develop => sub {
-      requires 'CAPSiDE::DBFlow';
+      requires 'DBIx::DBFlow';
     }
 
 # USAGE
@@ -111,7 +109,7 @@ You can also specify the name of the file to write to with `--file`.
 ## MySchema.pm cannot be found
 
 The 'lib' directory in the current directory is automatically included (your schema should be there).
-You can use the `-I` option to specify an alternate, or try executing with a PERL5LIB that points to the
+You can use the `-I` option to specify an alternate, or try executing with a PERL5LIB that points to the 
 appropiate directory with your schema.
 
 ## I have more than one schema to manage in my project
