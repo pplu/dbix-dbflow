@@ -2,7 +2,7 @@ name = DBIx-DBFlow
 author = Jose Luis Martinez <pplusdomain@gmail.com>
 copyright_holder = Jose Luis Martinez
 copyright_year = 2016
-license = None
+license = Apache_2_0
 main_module = lib/DBIx/DBFlow.pm
 
 [VersionFromModule]

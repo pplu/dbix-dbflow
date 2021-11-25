@@ -116,3 +116,19 @@ appropiate directory with your schema.
 
 All utils let you specify the schema name you're acting upon with `--schema` and the directory
 to create the upgrade/deploy scripts `--dir`
+
+# CONTRIBUTE
+
+The source code and issues are on https://github.com/pplu/dbix-dbflow
+
+# AUTHOR
+    Jose Luis Martinez
+    CPAN ID: JLMARTIN
+    pplusdomain@gmail.com
+
+# COPYRIGHT and LICENSE
+
+Copyright (c) 2016 by Jose Luis Martinez Torres
+
+This code is distributed under the Apache 2 License. The full text of the 
+license can be found in the LICENSE file included with this module.
